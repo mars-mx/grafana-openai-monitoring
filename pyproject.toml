@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "grafana-openai-monitoring"
+version = "0.0.1"
+description = "Monitor chat completions and completions endpoints of the OpenAI API and send metrics to Grafana Cloud."
+authors = ["Marius Schäffer <marius.schaeffer@web.de>"]
+license = "GNU General Public License v3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
