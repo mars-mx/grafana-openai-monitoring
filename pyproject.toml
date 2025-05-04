@@ -5,10 +5,12 @@ description = "Monitor chat completions and completions endpoints of the OpenAI 
 authors = ["Marius Schäffer <marius.schaeffer@web.de>"]
 license = "GNU General Public License v3.0"
 readme = "README.md"
+packages = [{include = "grafana_openai_monitoring"}]
 
 [tool.poetry.dependencies]
-python = "^3.12"
-
+python = "^3.7.1"
+openai = "^1.0.0"
+requests = "^2.31.0"
 
 [build-system]
 requires = ["poetry-core"]
