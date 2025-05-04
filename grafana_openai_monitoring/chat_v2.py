@@ -11,7 +11,7 @@ import time
 from .__handlers import __send_metrics, __send_logs, __calculate_cost, __check
 
 # Decorator function to monitor chat completion
-def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access_token, use_async=False, disable_content=False, environment="default", **kwargs): # pylint: disable=too-many-arguments, line-too-long
+def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access_token, use_async=False, disable_content=False, environment="default", **monitor_kwargs): # pylint: disable=too-many-arguments, line-too-long
     """
     A decorator function to monitor chat completions using the OpenAI API.
 
@@ -28,7 +28,7 @@ def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access
         use_async (bool): Whether the function is asynchronous or not.
         disable_content (bool): Whether to disable sending content in logs.
         environment (str): The environment name for metrics and logs.
-        **kwargs: Additional key-value pairs to be included in the metrics.
+        **monitor_kwargs: Additional key-value pairs to be included in the metrics.
 
     Returns:
         callable: The decorated function that monitors the API call and sends metrics/logs.
@@ -38,7 +38,6 @@ def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access
         arguments or as keyword arguments. If using positional arguments, make sure to
         provide at least five arguments in the order specified above.
     """
-
     metrics_url, logs_url = __check(metrics_url,
                                     logs_url,
                                     metrics_username,
@@ -107,31 +106,31 @@ def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access
             # Metric to track the number of completion tokens used in the response
             f'openai,job=integrations/openai,'
             f'source=python_chatv2,model={response.model},environment={environment}'
-            f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+            f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
             f'completionTokens={response.usage.completion_tokens}',
 
             # Metric to track the number of prompt tokens used in the response
             f'openai,job=integrations/openai,'
             f'source=python_chatv2,model={response.model},environment={environment}'
-            f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+            f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
             f'promptTokens={response.usage.prompt_tokens}',
 
             # Metric to track the total number of tokens used in the response
             f'openai,job=integrations/openai,'
             f'source=python_chatv2,model={response.model},environment={environment}'
-            f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+            f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
             f'totalTokens={response.usage.total_tokens}',
 
             # Metric to track the usage cost based on the model and token usage
             f'openai,job=integrations/openai,'
             f'source=python_chatv2,model={response.model},environment={environment}'
-            f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+            f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
             f'usageCost={cost}',
 
             # Metric to track the duration of the API request and response cycle
             f'openai,job=integrations/openai,'
             f'source=python_chatv2,model={response.model},environment={environment}'
-            f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+            f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
             f'requestDuration={duration}',
         ]
 
@@ -209,31 +208,31 @@ def monitor(func, metrics_url, logs_url, metrics_username, logs_username, access
                 # Metric to track the number of completion tokens used in the response
                 f'openai,job=integrations/openai,'
                 f'source=python_chatv2,model={response.model},environment={environment}'
-                f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+                f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
                 f'completionTokens={response.usage.completion_tokens}',
 
                 # Metric to track the number of prompt tokens used in the response
                 f'openai,job=integrations/openai,'
                 f'source=python_chatv2,model={response.model},environment={environment}'
-                f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+                f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
                 f'promptTokens={response.usage.prompt_tokens}',
 
                 # Metric to track the total number of tokens used in the response
                 f'openai,job=integrations/openai,'
                 f'source=python_chatv2,model={response.model},environment={environment}'
-                f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+                f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
                 f'totalTokens={response.usage.total_tokens}',
 
                 # Metric to track the usage cost based on the model and token usage
                 f'openai,job=integrations/openai,'
                 f'source=python_chatv2,model={response.model},environment={environment}'
-                f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+                f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
                 f'usageCost={cost}',
 
                 # Metric to track the duration of the API request and response cycle
                 f'openai,job=integrations/openai,'
                 f'source=python_chatv2,model={response.model},environment={environment}'
-                f'{",".join(f"{k}={v}" for k, v in kwargs.items())} '
+                f'{"," + ",".join(f"{k}={v}" for k, v in monitor_kwargs.items()) if monitor_kwargs else ""} '
                 f'requestDuration={duration}',
             ]
 
